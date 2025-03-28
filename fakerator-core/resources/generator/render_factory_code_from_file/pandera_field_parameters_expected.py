@@ -1,3 +1,9 @@
+import datetime
+from typing import TypedDict
+
+import fakerator as f
+
+
 class TestSchemaRecord(TypedDict):
     int_col: int
     float_col_only_ge: float
