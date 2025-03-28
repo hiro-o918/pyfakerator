@@ -13,20 +13,11 @@ pub struct PanderaHandler<R: Debug> {
     pa_float_regex: regex::Regex,
 }
 
+#[derive(Default)]
 struct PanderaFieldParameter {
     ge: Option<f64>,
     le: Option<f64>,
     nullable: Option<bool>,
-}
-
-impl Default for PanderaFieldParameter {
-    fn default() -> Self {
-        Self {
-            ge: None,
-            le: None,
-            nullable: None,
-        }
-    }
 }
 
 #[derive(Template)]
@@ -35,6 +26,12 @@ struct PanderaFactoryTemplate<'a> {
     record_class_name: &'a str,
     record_factory_name: &'a str,
     fields: Vec<Field>,
+}
+
+impl<R: Debug> Default for PanderaHandler<R> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<R: Debug> PanderaHandler<R> {
@@ -60,7 +57,7 @@ impl<R: Debug> PanderaHandler<R> {
         Ok(Some(
             PanderaFactoryTemplate {
                 record_class_name: &format!("{}Record", class_name),
-                record_factory_name: strings::to_snake_case(&record_class_name).as_str(),
+                record_factory_name: strings::to_snake_case(record_class_name).as_str(),
                 fields,
             }
             .render()?,
@@ -246,8 +243,7 @@ impl<R: Debug> PanderaHandler<R> {
             None => PanderaFieldParameter::default(),
         };
 
-        let Some(field_type) =
-            self.get_field_type_from_series_ann(&field_ann, &pandera_field_param)
+        let Some(field_type) = self.get_field_type_from_series_ann(field_ann, &pandera_field_param)
         else {
             return Ok(None);
         };

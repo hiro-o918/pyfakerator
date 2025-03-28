@@ -11,7 +11,7 @@ fn walk_dir(dir: &Path, suffix: &str) -> Result<Vec<PathBuf>> {
         let path = entry.path();
         if path.is_dir() {
             files.append(&mut walk_dir(&path, suffix)?);
-        } else if path.extension().map_or(false, |ext| ext == suffix) {
+        } else if path.extension().is_some_and(|ext| ext == suffix) {
             files.push(path);
         }
     }
@@ -21,7 +21,7 @@ fn walk_dir(dir: &Path, suffix: &str) -> Result<Vec<PathBuf>> {
 fn render_factory_code<R: std::fmt::Debug>(stmt: &ast::Stmt<R>) -> Result<Option<String>> {
     match stmt {
         ast::Stmt::ClassDef(class_def) => {
-            return PanderaHandler::new().generate_pandera_dataframe_factory(&class_def);
+            PanderaHandler::new().generate_pandera_dataframe_factory(class_def)
         }
         _ => Ok(None),
     }
@@ -32,7 +32,7 @@ pub fn render_factory_code_from_file(file: &Path) -> Result<Option<String>> {
     let suite = ast::Suite::parse(&content, file.to_str().unwrap())?;
     let factory_codes: Vec<String> = suite
         .iter()
-        .map(|stmt| render_factory_code(stmt))
+        .map(render_factory_code)
         .collect::<Result<Vec<Option<String>>>>()?
         .into_iter()
         .flatten()
