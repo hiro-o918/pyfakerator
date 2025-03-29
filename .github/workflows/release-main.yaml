@@ -77,6 +77,6 @@ jobs:
       - name: "Publish Package"
         run: |
           uv build
-          uv publish
+          uv publish --project pyfakerator
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_PASSWORD }}
