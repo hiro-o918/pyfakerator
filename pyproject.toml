@@ -116,7 +116,7 @@ docstring-code-format = false
 docstring-code-line-length = "dynamic"
 
 [tool.mypy]
-exclude =  [".venv/", "fakerator_core/resources/"]
+exclude =  [".venv/", "fakerator-core/resources/"]
 
 check_untyped_defs = true
 disallow_any_decorated = false

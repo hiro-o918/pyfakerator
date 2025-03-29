@@ -1,7 +1,7 @@
-
 import math
 import random
 import datetime
+
 
 def gen_int(
     ge: float = 1,
@@ -25,6 +25,7 @@ def gen_int(
         raise ValueError("Lower bound 'ge' cannot be greater than upper bound 'le'.")
     return random.randint(int(math.ceil(ge)), int(math.floor(le)))
 
+
 def gen_float(
     ge: float = 0.0,
     le: float = 100.0,
@@ -47,6 +48,7 @@ def gen_float(
         raise ValueError("Lower bound 'ge' cannot be greater than upper bound 'le'.")
     return random.uniform(ge, le)
 
+
 def gen_string(
     min_length: int = 5,
     max_length: int = 10,
@@ -66,7 +68,8 @@ def gen_string(
     if seed is not None:
         random.seed(seed)
     length = random.randint(min_length, max_length)
-    return ''.join(random.choices("abcdefghijklmnopqrstuvwxyz", k=length))
+    return "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=length))
+
 
 def gen_bool(seed: int | None = None) -> bool:
     """
@@ -81,6 +84,7 @@ def gen_bool(seed: int | None = None) -> bool:
     if seed is not None:
         random.seed(seed)
     return random.choice([True, False])
+
 
 def gen_datetime(
     from_datetime: datetime.datetime | None = None,
@@ -107,6 +111,7 @@ def gen_datetime(
     delta = to_datetime - from_datetime
     random_seconds = random.randint(0, int(delta.total_seconds()))
     return from_datetime + datetime.timedelta(seconds=random_seconds)
+
 
 def gen_date(
     from_date: datetime.date | None = None,

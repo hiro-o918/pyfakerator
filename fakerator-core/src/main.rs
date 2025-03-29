@@ -24,7 +24,6 @@ enum Commands {
     },
 }
 
-
 fn main() {
     let args = Cli::parse();
 
