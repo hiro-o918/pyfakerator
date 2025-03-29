@@ -79,5 +79,4 @@ jobs:
           uv build
           uv publish
         env:
-          PYPI_USERNAME: __token__
-          PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_PASSWORD }}
