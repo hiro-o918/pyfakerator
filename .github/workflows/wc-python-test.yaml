@@ -18,6 +18,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
           cache-suffix: ${{ matrix.os }}-${{ matrix.python-version }}
+      - uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
+        with:
+          workspaces: |
+            fauxgen-core -> fauxgen-core-target-${{ matrix.os }}
+          key: rust-test-${{ matrix.os }}
 
       - name: Sync dependencies
         run: uv sync --frozen
