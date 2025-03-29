@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/hiro-o918/fauxgen/compare/0.2.0...0.2.1) (2025-03-29)
+
+
+### Miscellaneous
+
+* rename project ([#17](https://github.com/hiro-o918/fauxgen/issues/17)) ([e811bf5](https://github.com/hiro-o918/fauxgen/commit/e811bf5b412bf07124e70d1b6fc3b47fea1a59d3))
+
 ## [0.2.0](https://github.com/hiro-o918/fauxgen/compare/0.1.0...0.2.0) (2025-03-29)
 
 ### Features
