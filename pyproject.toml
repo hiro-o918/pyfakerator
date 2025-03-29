@@ -61,6 +61,7 @@ exclude = [
   "venv",
   "fauxgen-core/resources/",
   "fauxgen-core/templates/",
+  "**/testing/fauxgen",
 ]
 
 # Same as Black.
@@ -112,7 +113,7 @@ docstring-code-format = false
 docstring-code-line-length = "dynamic"
 
 [tool.mypy]
-exclude = [".venv/", "fauxgen-core/resources/"]
+exclude = [".venv/", "fauxgen-core/resources/", "examples/"]
 
 check_untyped_defs = true
 disallow_any_decorated = false
@@ -137,3 +138,8 @@ warn_return_any = true
 warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+testpaths = [
+  "tests",
+]
