@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
 use crate::factories::pandera::PanderaHandler;
-use anyhow::Result;
+use anyhow::{Context, Result};
 use rustpython_parser::{ast, Parse};
 
 fn walk_dir(dir: &Path, suffix: &str) -> Result<Vec<PathBuf>> {
@@ -52,6 +52,25 @@ import fakerator as f
     ))
 }
 
+fn create_dir_all_with_init(from: &Path, target: &Path) -> Result<()> {
+    if target.exists() {
+        return Ok(());
+    }
+
+    // NOTE: recursive create parent directories until the directory exists
+    if let Some(parent) = target.parent() {
+        create_dir_all_with_init(from, parent)?;
+    }
+
+    std::fs::create_dir(target)
+        .with_context(|| format!("Failed to create directory: {}", target.display()))?;
+
+    let init_path = target.join("__init__.py");
+    std::fs::write(init_path, "")?;
+
+    Ok(())
+}
+
 pub fn write_factory_codes(module_dir: &Path, output_dir: &Path) -> Result<()> {
     let files = walk_dir(module_dir, "py")?;
     for file in files {
@@ -60,7 +79,10 @@ pub fn write_factory_codes(module_dir: &Path, output_dir: &Path) -> Result<()> {
         };
         let relative_path = file.strip_prefix(module_dir)?.to_path_buf();
         let factory_file = output_dir.join(relative_path).with_extension("py");
-        std::fs::create_dir_all(factory_file.parent().unwrap())?;
+
+        if let Some(parent) = factory_file.parent() {
+            create_dir_all_with_init(output_dir, parent)?;
+        }
         std::fs::write(factory_file, factory_code)?;
     }
     Ok(())
@@ -93,7 +115,8 @@ mod tests {
             result.err()
         );
         let actual_factory_code = result.unwrap();
-        let expected_factory_code = std::fs::read_to_string(module_dir.join(expected_file)).unwrap();
+        let expected_factory_code =
+            std::fs::read_to_string(module_dir.join(expected_file)).unwrap();
         assert_eq!(actual_factory_code, Some(expected_factory_code));
     }
 
@@ -114,6 +137,20 @@ mod tests {
         assert_eq!(actual_factory_code, None);
     }
 
+    fn get_all_files(dir: &Path) -> Result<Vec<PathBuf>> {
+        let mut files = Vec::new();
+        for entry in std::fs::read_dir(dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_dir() {
+                files.extend(get_all_files(&path)?);
+            } else {
+                files.push(path);
+            }
+        }
+        Ok(files)
+    }
+
     #[test]
     fn test_write_factory_codes() {
         let module_dir = PathBuf::from("./resources/generator/write_factory_codes/input");
@@ -122,20 +159,49 @@ mod tests {
 
         write_factory_codes(&module_dir, &output_dir).unwrap();
 
-        assert!(std::fs::read_dir(&output_dir).unwrap().count() > 0);
+        // Get all files from both directories
+        let mut actual_files = get_all_files(&output_dir).unwrap();
+        let mut expected_files = get_all_files(&expected_dir).unwrap();
 
-        for entry in std::fs::read_dir(&output_dir).unwrap() {
-            let actual_path = entry.unwrap().path();
-            if actual_path.is_dir() {
-                continue;
-            }
-            let relative_path = actual_path.strip_prefix(&output_dir).unwrap();
-            let expected_path = expected_dir.join(relative_path);
+        // Sort files to ensure consistent ordering
+        actual_files.sort();
+        expected_files.sort();
 
-            assert!(expected_path.exists(), "File {:?} not found", relative_path);
+        // Compare the number of files
+        assert_eq!(
+            actual_files.len(),
+            expected_files.len(),
+            "Different number of files found. Expected: {:?}, Actual: {:?}",
+            expected_files
+                .iter()
+                .map(|p| p.strip_prefix(&expected_dir).unwrap())
+                .collect::<Vec<_>>(),
+            actual_files
+                .iter()
+                .map(|p| p.strip_prefix(&output_dir).unwrap())
+                .collect::<Vec<_>>()
+        );
+
+        // Compare each file
+        for (actual_path, expected_path) in actual_files.iter().zip(expected_files.iter()) {
+            let actual_relative = actual_path.strip_prefix(&output_dir).unwrap();
+            let expected_relative = expected_path.strip_prefix(&expected_dir).unwrap();
+
+            // Compare relative paths
+            assert_eq!(
+                actual_relative, expected_relative,
+                "File paths don't match: {:?} != {:?}",
+                actual_relative, expected_relative
+            );
+
+            // Compare file contents
             let actual_content = std::fs::read_to_string(actual_path).unwrap();
             let expected_content = std::fs::read_to_string(expected_path).unwrap();
-            assert_eq!(actual_content, expected_content);
+            assert_eq!(
+                actual_content, expected_content,
+                "Content mismatch for file: {:?}",
+                actual_relative
+            );
         }
     }
 }
