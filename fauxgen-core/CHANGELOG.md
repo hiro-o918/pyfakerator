@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.0](https://github.com/hiro-o918/fauxgen/compare/fauxgen-core@v0.2.3...fauxgen-core@v0.1.0) (2025-03-29)
+
+
+### Miscellaneous
+
+* release 0.1.0 ([#32](https://github.com/hiro-o918/fauxgen/issues/32)) ([1786040](https://github.com/hiro-o918/fauxgen/commit/178604081e51228ed15277633d2ae518cd95973f))
+* release 0.1.0 ([#34](https://github.com/hiro-o918/fauxgen/issues/34)) ([8d8f491](https://github.com/hiro-o918/fauxgen/commit/8d8f491a7e1300526eb9434628e63a3db3cdae35))
+* release 0.3.1 ([#24](https://github.com/hiro-o918/fauxgen/issues/24)) ([4f8c57f](https://github.com/hiro-o918/fauxgen/commit/4f8c57fc26d4eb916795b6af8daec7ef5dacf9d5))
+* release main ([#18](https://github.com/hiro-o918/fauxgen/issues/18)) ([2362d4b](https://github.com/hiro-o918/fauxgen/commit/2362d4bc79a88e15e5cb2da6a2edbabe4789bfda))
+* release main ([#20](https://github.com/hiro-o918/fauxgen/issues/20)) ([8a811d7](https://github.com/hiro-o918/fauxgen/commit/8a811d71df9589dfa155efeff08cb9207fea322f))
+* release main ([#25](https://github.com/hiro-o918/fauxgen/issues/25)) ([ddfed21](https://github.com/hiro-o918/fauxgen/commit/ddfed2103fd5065d5e8665c6641acab3fe6496aa))
+* rename project ([#17](https://github.com/hiro-o918/fauxgen/issues/17)) ([e811bf5](https://github.com/hiro-o918/fauxgen/commit/e811bf5b412bf07124e70d1b6fc3b47fea1a59d3))
+
 ## [0.2.3](https://github.com/hiro-o918/fauxgen/compare/fauxgen-core@v0.2.2...fauxgen-core@v0.2.3) (2025-03-29)
 
 
