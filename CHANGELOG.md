@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/hiro-o918/fauxgen/compare/v0.2.4...v0.3.0) (2025-03-29)
+
+
+### Features
+
+* support multiple deploy workflow ([#21](https://github.com/hiro-o918/fauxgen/issues/21)) ([e61715c](https://github.com/hiro-o918/fauxgen/commit/e61715c6dde810bdd0ccacaf927970eaba65c6f8))
+
 ## [0.2.4](https://github.com/hiro-o918/fauxgen/compare/0.2.3...v0.2.4) (2025-03-29)
 
 
