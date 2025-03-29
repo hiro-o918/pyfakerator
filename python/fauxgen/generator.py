@@ -1,6 +1,6 @@
+import datetime
 import math
 import random
-import datetime
 
 
 def gen_int(

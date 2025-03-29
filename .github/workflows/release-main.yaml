@@ -45,9 +45,51 @@ jobs:
           manifest-file: .github/release-please/.manifest.json
           target-branch: main
 
+  python-test:
+    if: github.event.pull_request.merged == true
+    uses: ./.github/workflows/wc-python-test.yaml
+
+  rust-test:
+    if: github.event.pull_request.merged == true
+    uses: ./.github/workflows/wc-rust-test.yaml
+
+  build:
+    needs: [python-test, rust-test]
+    if: github.event.pull_request.merged == true
+    name: build on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
+        with:
+          workspaces: |
+            fauxgen-core -> fauxgen-core-target-${{ matrix.os }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@22695119d769bdb6f7032ad67b9bca0ef8c4a174 # v5.4.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Build wheel
+        run: uv build
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: dist-${{ matrix.os }}-${{ matrix.python-version }}
+          path: dist/
+
   release-main:
-    needs: release-please
-    if: needs.release-please.outputs.release_created && github.event.pull_request.merged == true
+    needs: [python-test, rust-test, build]
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
@@ -56,27 +98,25 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          fetch-depth: 0
 
-      - uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
+      - uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
         with:
-          workspaces: |
-            fauxgen-core -> fauxgen-core-target
+          pattern: dist-*
+          merge-multiple: true
+          path: dist
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
+        uses: astral-sh/setup-uv@22695119d769bdb6f7032ad67b9bca0ef8c4a174 # v5.4.0
 
-      - name: "Set up Python"
-        uses: actions/setup-python@v5
-        with:
-          python-version-file: "pyproject.toml"
 
-      - name: "Publish Package"
-        run: |
-          uv build
-          uv publish
+      - name: List distribution files
+        run: ls -l dist/
+
+      - name: Check distribution files
+        run: uvx twine check dist/*
+
+      - name: Publish to PyPI
         env:
-          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_PASSWORD }}
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: uvx twine upload dist/*
