@@ -65,11 +65,11 @@ impl Field {
         match self.field_type {
             FieldType::Int(FieldTypeInt { ge, le }) => {
                 let (ge, le) = self.get_le_and_ge(ge, le);
-                format!("f.gen_int(ge={}, le={})", ge, le)
+                format!("f.gen_int(ge={}, le={}, seed=seed_)", ge, le)
             }
             FieldType::Float(FieldTypeFloat { ge, le }) => {
                 let (ge, le) = self.get_le_and_ge(ge, le);
-                format!("f.gen_float(ge={}, le={})", ge, le)
+                format!("f.gen_float(ge={}, le={}, seed=seed_)", ge, le)
             }
             FieldType::String(FieldTypeString {
                 min_length,
@@ -78,20 +78,20 @@ impl Field {
                 let min_length = min_length.unwrap_or(5);
                 let max_length = max_length.unwrap_or(min_length + 5);
                 format!(
-                    "f.gen_string(min_length={}, max_length={})",
+                    "f.gen_string(min_length={}, max_length={}, seed=seed_)",
                     min_length, max_length
                 )
             }
-            FieldType::Bool => "f.gen_bool()".to_string(),
+            FieldType::Bool => "f.gen_bool(seed=seed_)".to_string(),
             FieldType::Datetime => {
                 let from = "datetime.datetime(2020, 1, 1)";
                 let to = "datetime.datetime(2021, 1, 1)";
-                format!("f.gen_datetime(from_datetime={}, to_datetime={})", from, to)
+                format!("f.gen_datetime(from_datetime={}, to_datetime={}, seed=seed_)", from, to)
             }
             FieldType::Date => {
                 let from = "datetime.date(2020, 1, 1)";
                 let to = "datetime.date(2021, 1, 1)";
-                format!("f.gen_date(from_date={}, to_date={})", from, to)
+                format!("f.gen_date(from_date={}, to_date={}, seed=seed_)", from, to)
             }
         }
     }
