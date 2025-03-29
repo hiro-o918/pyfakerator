@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/hiro-o918/fauxgen/compare/fauxgen-core@v0.2.2...fauxgen-core@v0.2.3) (2025-03-29)
+
+
+### Miscellaneous
+
+* release 0.3.1 ([#24](https://github.com/hiro-o918/fauxgen/issues/24)) ([4f8c57f](https://github.com/hiro-o918/fauxgen/commit/4f8c57fc26d4eb916795b6af8daec7ef5dacf9d5))
+
 ## [0.2.2](https://github.com/hiro-o918/fauxgen/compare/fauxgen-core@v0.2.1...fauxgen-core@v0.2.2) (2025-03-29)
 
 
