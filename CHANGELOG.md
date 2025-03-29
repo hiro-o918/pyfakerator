@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.3](https://github.com/hiro-o918/fauxgen/compare/0.2.2...0.2.3) (2025-03-29)
+
+
+### Bug Fixes
+
+* uv publish ([#15](https://github.com/hiro-o918/fauxgen/issues/15)) ([5d5d7ca](https://github.com/hiro-o918/fauxgen/commit/5d5d7cadc5664d0307cf325b4f68de5f8a2ac200))
+
+
+### Miscellaneous
+
+* release main ([#16](https://github.com/hiro-o918/fauxgen/issues/16)) ([37a1ebe](https://github.com/hiro-o918/fauxgen/commit/37a1ebe67f6b1329d67005eddd4c7d259b252602))
+* rename project ([#17](https://github.com/hiro-o918/fauxgen/issues/17)) ([e811bf5](https://github.com/hiro-o918/fauxgen/commit/e811bf5b412bf07124e70d1b6fc3b47fea1a59d3))
+
 ## [0.2.3](https://github.com/hiro-o918/pyfakerator/compare/0.2.2...0.2.3) (2025-03-29)
 
 
