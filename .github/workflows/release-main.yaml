@@ -62,7 +62,7 @@ jobs:
       - uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
         with:
           workspaces: |
-            fakerator-core -> fakerator-core-target
+            fauxgen-core -> fauxgen-core-target
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -77,6 +77,6 @@ jobs:
       - name: "Publish Package"
         run: |
           uv build
-          uv publish --project pyfakerator
+          uv publish
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_PASSWORD }}

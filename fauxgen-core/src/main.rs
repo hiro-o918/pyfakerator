@@ -1,9 +1,9 @@
 use clap::{Parser, Subcommand};
-use fakerator_core::generator::write_factory_codes;
+use fauxgen_core::generator::write_factory_codes;
 use std::path::PathBuf;
 
 #[derive(Debug, Parser)] // requires `derive` feature
-#[command(name = "fakerator")]
+#[command(name = "fauxgen")]
 #[command(about = "Python code generator to construct fake data for testing", long_about = None)]
 #[command(version = env!("CARGO_PKG_VERSION"))]
 struct Cli {
@@ -37,9 +37,26 @@ fn main() {
                 std::process::exit(1);
             }
             let output_dir = output_dir.unwrap_or_else(|| {
-                let mut path = module_dir.clone();
-                path.push("testing/fakerator/");
-                path
+                let testing_path = module_dir.join("testing");
+                // Create the testing directory if it doesn't exist
+                if !testing_path.exists() {
+                    std::fs::create_dir_all(&testing_path).unwrap_or_else(|_| {
+                        eprintln!(
+                            "Failed to create testing directory: {}",
+                            testing_path.display()
+                        );
+                        std::process::exit(1);
+                    });
+                }
+                let init_path = testing_path.join("__init__.py");
+                if !init_path.exists() {
+                    std::fs::write(&init_path, "").unwrap_or_else(|_| {
+                        eprintln!("Failed to create __init__.py file: {}", init_path.display());
+                        std::process::exit(1);
+                    });
+                }
+
+                testing_path.join("fauxgen")
             });
             if let Err(e) = write_factory_codes(&module_dir, &output_dir) {
                 eprintln!("Error generating factory codes: {}", e);

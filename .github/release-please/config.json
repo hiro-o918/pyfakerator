@@ -44,7 +44,7 @@
     ".": {
       "release-type": "python"
     },
-    "fakerator-core": {
+    "fauxgen-core": {
       "release-type": "rust"
     }
   }
