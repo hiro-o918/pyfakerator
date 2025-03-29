@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/hiro-o918/fakerator/compare/0.2.0...0.2.1) (2025-03-29)
+
+
+### Miscellaneous
+
+* add workflow to release ([#11](https://github.com/hiro-o918/fakerator/issues/11)) ([447845b](https://github.com/hiro-o918/fakerator/commit/447845b3c074f6d3d60a7f95a83b2c6142c27ab5))
+
 ## [0.2.0](https://github.com/hiro-o918/fakerator/compare/0.1.0...0.2.0) (2025-03-29)
 
 
