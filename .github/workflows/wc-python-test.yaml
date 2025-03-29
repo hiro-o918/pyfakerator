@@ -24,9 +24,6 @@ jobs:
             fauxgen-core -> fauxgen-core-target-${{ matrix.os }}
           key: rust-test-${{ matrix.os }}
 
-      - name: Sync dependencies
-        run: uv sync --frozen
-
       - name: Run ruff
         run: uv run ruff check .
 
