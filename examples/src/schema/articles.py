@@ -1,6 +1,7 @@
 import pandera as pa
 from pandera.typing import Series
 
+
 class Article(pa.DataFrameModel):
     id: Series[int] = pa.Field(ge=1)
     title: Series[str] = pa.Field(nullable=False)

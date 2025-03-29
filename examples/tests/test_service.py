@@ -19,7 +19,7 @@ from src.testing.fakerator.schema.user import user_schema_record
             ).pipe(DataFrame[UserSchema]),
             pd.DataFrame(
                 [
-                    user_schema_record(age=21 , seed_=2),
+                    user_schema_record(age=21, seed_=2),
                 ]
             ).pipe(DataFrame[UserSchema]),
             id="should exclude under 20 users",
@@ -41,6 +41,8 @@ from src.testing.fakerator.schema.user import user_schema_record
         ),
     ],
 )
-def test_exclude_under_20_users(df_user: DataFrame[UserSchema], df_expected: DataFrame[UserSchema]) -> None:
+def test_exclude_under_20_users(
+    df_user: DataFrame[UserSchema], df_expected: DataFrame[UserSchema]
+) -> None:
     df_actual = exclude_under_20_users(df_user)
     pd.testing.assert_frame_equal(df_actual, df_expected)

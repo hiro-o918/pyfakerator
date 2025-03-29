@@ -86,7 +86,10 @@ impl Field {
             FieldType::Datetime => {
                 let from = "datetime.datetime(2020, 1, 1)";
                 let to = "datetime.datetime(2021, 1, 1)";
-                format!("f.gen_datetime(from_datetime={}, to_datetime={}, seed=seed_)", from, to)
+                format!(
+                    "f.gen_datetime(from_datetime={}, to_datetime={}, seed=seed_)",
+                    from, to
+                )
             }
             FieldType::Date => {
                 let from = "datetime.date(2020, 1, 1)";

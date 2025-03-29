@@ -1,6 +1,7 @@
 import pandera as pa
 from pandera.typing import Series
 
+
 class UserSchema(pa.DataFrameModel):
     id: Series[int] = pa.Field(ge=1)
     age: Series[int] = pa.Field(ge=0, le=150)
