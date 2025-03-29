@@ -1,6 +1,6 @@
 # Examples
 
-This directory contains practical examples of using fakerator. The examples demonstrate how to use fakerator's factory methods to simplify testing pandera DataFrameModels.
+This directory contains practical examples of using fauxgen. The examples demonstrate how to use fauxgen's factory methods to simplify testing pandera DataFrameModels.
 
 ## Project Structure
 
@@ -11,7 +11,7 @@ examples/
 │   │   ├── user.py      # User model with validation rules
 │   │   └── articles.py  # Article model with relationships
 │   ├── testing/
-│   │   └── fakerator/   # Generated factory code
+│   │   └── fauxgen/   # Generated factory code
 │   └── service.py       # Example service using the models
 └── tests/
     └── test_service.py  # Test implementations
@@ -23,19 +23,19 @@ Generate factory methods from your pandera DataFrameModel definitions:
 
 ```bash
 # Generate factory code from models in src directory
-uv run fakerator gen --module-dir src
+uv run fauxgen gen --module-dir src
 ```
 
 ## Example Usage
 
-This example demonstrates how fakerator simplifies testing by generating factory methods for your pandera DataFrameModels. The factory methods handle field validation rules and allow you to focus on the specific fields relevant to your test.
+This example demonstrates how fauxgen simplifies testing by generating factory methods for your pandera DataFrameModels. The factory methods handle field validation rules and allow you to focus on the specific fields relevant to your test.
 
 ```python
 import pandas as pd
 import pytest
 from pandera.typing import DataFrame
 from src.schema.user import UserSchema
-from src.testing.fakerator.schema.user import user_schema_record
+from src.testing.fauxgen.schema.user import user_schema_record
 
 @pytest.mark.parametrize(
     "df_user,df_expected",
@@ -62,6 +62,7 @@ def test_exclude_under_20_users(df_user: DataFrame[UserSchema], df_expected: Dat
 ```
 
 The code above demonstrates:
+
 - Using factory methods to create test data with specific field values
 - Automatic generation of valid values for unspecified fields
 - Integration with pandera's DataFrame validation

@@ -43,7 +43,7 @@ pub fn render_factory_code_from_file(file: &Path) -> Result<Option<String>> {
     let import_statements = r#"import datetime
 from typing import TypedDict
 
-import fakerator as f
+import fauxgen as f
 
 
 "#;
@@ -58,7 +58,7 @@ fn create_dir_all_with_init(from: &Path, target: &Path) -> Result<()> {
     // and create the directory and __init__.py file if required
     if from == target {
         if !target.exists() {
-            std::fs::create_dir(target)
+            std::fs::create_dir_all(target)
                 .with_context(|| format!("Failed to create directory: {}", target.display()))?;
         }
         if !init_path.exists() {

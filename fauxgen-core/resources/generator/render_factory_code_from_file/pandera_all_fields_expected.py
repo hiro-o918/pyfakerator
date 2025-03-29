@@ -1,7 +1,7 @@
 import datetime
 from typing import TypedDict
 
-import fakerator as f
+import fauxgen as f
 
 
 class TestSchemaRecord(TypedDict):
