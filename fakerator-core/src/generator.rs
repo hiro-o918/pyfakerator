@@ -52,13 +52,13 @@ import fakerator as f
     ))
 }
 
-pub fn write_factory_codes(root_dir: &Path, output_dir: &Path) -> Result<()> {
-    let files = walk_dir(root_dir, "py")?;
+pub fn write_factory_codes(module_dir: &Path, output_dir: &Path) -> Result<()> {
+    let files = walk_dir(module_dir, "py")?;
     for file in files {
         let Some(factory_code) = render_factory_code_from_file(&file)? else {
             continue;
         };
-        let relative_path = file.strip_prefix(root_dir)?.to_path_buf();
+        let relative_path = file.strip_prefix(module_dir)?.to_path_buf();
         let factory_file = output_dir.join(relative_path).with_extension("py");
         std::fs::create_dir_all(factory_file.parent().unwrap())?;
         std::fs::write(factory_file, factory_code)?;
@@ -84,8 +84,8 @@ mod tests {
         #[case] input_file: &str,
         #[case] expected_file: &str,
     ) {
-        let root_dir = PathBuf::from("./resources/generator/render_factory_code_from_file");
-        let file = root_dir.join(input_file);
+        let module_dir = PathBuf::from("./resources/generator/render_factory_code_from_file");
+        let file = module_dir.join(input_file);
         let result = render_factory_code_from_file(&file);
         assert!(
             result.is_ok(),
@@ -93,7 +93,7 @@ mod tests {
             result.err()
         );
         let actual_factory_code = result.unwrap();
-        let expected_factory_code = std::fs::read_to_string(root_dir.join(expected_file)).unwrap();
+        let expected_factory_code = std::fs::read_to_string(module_dir.join(expected_file)).unwrap();
         assert_eq!(actual_factory_code, Some(expected_factory_code));
     }
 
@@ -102,8 +102,8 @@ mod tests {
     fn test_render_factory_code_from_file_should_none_when_target_class_not_found(
         #[case] input_file: &str,
     ) {
-        let root_dir = PathBuf::from("./resources/generator/render_factory_code_from_file");
-        let file = root_dir.join(input_file);
+        let module_dir = PathBuf::from("./resources/generator/render_factory_code_from_file");
+        let file = module_dir.join(input_file);
         let result = render_factory_code_from_file(&file);
         assert!(
             result.is_ok(),
@@ -116,11 +116,11 @@ mod tests {
 
     #[test]
     fn test_write_factory_codes() {
-        let root_dir = PathBuf::from("./resources/generator/write_factory_codes/input");
+        let module_dir = PathBuf::from("./resources/generator/write_factory_codes/input");
         let output_dir = TempDir::new().unwrap().path().to_path_buf();
         let expected_dir = PathBuf::from("./resources/generator/write_factory_codes/expected");
 
-        write_factory_codes(&root_dir, &output_dir).unwrap();
+        write_factory_codes(&module_dir, &output_dir).unwrap();
 
         assert!(std::fs::read_dir(&output_dir).unwrap().count() > 0);
 

@@ -17,10 +17,10 @@ enum Commands {
     Gen {
         /// The root directory containing Python files to process
         #[arg(long, required = true)]
-        root_dir: PathBuf,
+        module_dir: PathBuf,
         /// The output directory where generated factory codes will be saved
-        #[arg(long, required = true)]
-        output_dir: PathBuf,
+        #[arg(long)]
+        output_dir: Option<PathBuf>,
     },
 }
 
@@ -29,14 +29,19 @@ fn main() {
 
     match args.command {
         Commands::Gen {
-            root_dir,
+            module_dir,
             output_dir,
         } => {
-            if !root_dir.exists() {
-                eprintln!("Root directory does not exist: {}", root_dir.display());
+            if !module_dir.exists() {
+                eprintln!("module dir does not exist: {}", module_dir.display());
                 std::process::exit(1);
             }
-            if let Err(e) = write_factory_codes(&root_dir, &output_dir) {
+            let output_dir = output_dir.unwrap_or_else(|| {
+                let mut path = module_dir.clone();
+                path.push("testing/fakerator/");
+                path
+            });
+            if let Err(e) = write_factory_codes(&module_dir, &output_dir) {
                 eprintln!("Error generating factory codes: {}", e);
             }
             println!(
