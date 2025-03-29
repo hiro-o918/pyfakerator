@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/hiro-o918/pyfakerator/compare/0.2.2...0.2.3) (2025-03-29)
+
+
+### Bug Fixes
+
+* uv publish ([#15](https://github.com/hiro-o918/pyfakerator/issues/15)) ([5d5d7ca](https://github.com/hiro-o918/pyfakerator/commit/5d5d7cadc5664d0307cf325b4f68de5f8a2ac200))
+
 ## [0.2.2](https://github.com/hiro-o918/fakerator/compare/0.2.1...0.2.2) (2025-03-29)
 
 
