@@ -9,6 +9,7 @@ def {{ record_factory_name }}(
 {%- for field in fields %}
     {{ field.name }}: {{ field.get_type_annotation() }} | f.Unset = f.UNSET,
 {%- endfor %}
+    seed_: int | None = None,
 ) -> {{ record_class_name }}:
     return {
 {%- for field in fields %}
