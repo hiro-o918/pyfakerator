@@ -54,42 +54,81 @@ jobs:
     uses: ./.github/workflows/wc-rust-test.yaml
 
   build:
-    needs: [python-test, rust-test]
-    if: github.event.pull_request.merged == true
+    needs: [release-please, python-test, rust-test]
+    if: needs.release-please.outputs.release_created && github.event.pull_request.merged == true
     name: build on ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        os: [linux, macos]
+        target: [x86_64, aarch64]
+        manylinux: [auto]
+        include:
+          # Linux manylinux builds
+          - os: linux
+            manylinux: auto
+            target: i686
+          - os: linux
+            manylinux: auto
+            target: aarch64
+          - os: linux
+            manylinux: auto
+            target: armv7
+            interpreter: "3.10 3.11 3.12 3.13"
+          - os: linux
+            manylinux: auto
+            target: ppc64le
+            interpreter: "3.10 3.11 3.12 3.13"
+          - os: linux
+            manylinux: auto
+            target: s390x
+            interpreter: "3.10 3.11 3.12 3.13"
+          # Linux musllinux builds
+          - os: linux
+            manylinux: musllinux_1_1
+            target: x86_64
+          - os: linux
+            manylinux: musllinux_1_1
+            target: aarch64
+          - os: linux
+            manylinux: musllinux_1_1
+            target: armv7
+          # macOS builds
+          - os: macos
+            target: x86_64
+          - os: macos
+            target: aarch64
+            interpreter: "3.10 3.11 3.12 3.13"
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ (matrix.os == 'linux' && 'ubuntu') || matrix.os }}-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
-        with:
-          workspaces: |
-            fauxgen-core -> fauxgen-core-target-${{ matrix.os }}
 
       - name: Install uv
         uses: astral-sh/setup-uv@22695119d769bdb6f7032ad67b9bca0ef8c4a174 # v5.4.0
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.12'
 
-      - name: Build wheel
-        run: uv build
+      - uses: PyO3/maturin-action@22fe573c6ed0c03ab9b84e631cbfa49bddf6e20e # v1.47.3
+        with:
+          target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux }}
+          args: --release --out dist --interpreter ${{ matrix.interpreter || '3.10 3.11 3.12 3.13' }}
+          rust-toolchain: stable
+          docker-options: -e CI
+
+      - run: ls -lh dist/
+
+      - run: uvx twine check --strict dist/*
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: dist-${{ matrix.os }}-${{ matrix.python-version }}
-          path: dist/
+          name: pypi_files_${{ matrix.os }}_${{ matrix.target }}_${{ matrix.interpreter || 'all' }}_${{ matrix.manylinux }}
+          path: dist
 
   release-main:
-    needs: [python-test, rust-test, build]
-    if: github.event.pull_request.merged == true
+    needs: [release-please, python-test, rust-test, build]
+    if: needs.release-please.outputs.release_created && github.event.pull_request.merged == true
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
@@ -107,7 +146,6 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@22695119d769bdb6f7032ad67b9bca0ef8c4a174 # v5.4.0
-
 
       - name: List distribution files
         run: ls -l dist/
