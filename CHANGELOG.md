@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/hiro-o918/fakerator/compare/0.2.1...0.2.2) (2025-03-29)
+
+
+### Bug Fixes
+
+* pypi token key ([#13](https://github.com/hiro-o918/fakerator/issues/13)) ([bfe8a6c](https://github.com/hiro-o918/fakerator/commit/bfe8a6cd9c36ff1612370409c2af16804dbcbbf7))
+
 ## [0.2.1](https://github.com/hiro-o918/fakerator/compare/0.2.0...0.2.1) (2025-03-29)
 
 
