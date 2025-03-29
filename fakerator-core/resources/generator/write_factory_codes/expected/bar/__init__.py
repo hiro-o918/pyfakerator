@@ -1,7 +1,7 @@
 import datetime
 from typing import TypedDict
 
-import python as f
+import fakerator as f
 
 
 class BarSchemaRecord(TypedDict):
@@ -10,8 +10,8 @@ class BarSchemaRecord(TypedDict):
 
 def bar_schema_record(
     *,
-    bar: int | f.Unset = f.Unset,
+    bar: int | f.Unset = f.UNSET,
 ) -> BarSchemaRecord:
     return {
-        "bar": f.Unset.unwrap_or_else(lambda: f.f.gen_int(ge=0, le=100)),
+        "bar": f.Unset.unwrap_or_else(bar, lambda: f.gen_int(ge=0, le=100)),
     }

@@ -21,7 +21,7 @@ struct PanderaFieldParameter {
 }
 
 #[derive(Template)]
-#[template(path = "pandera_factory.py")]
+#[template(path = "pandera_factory.py.tpl")]
 struct PanderaFactoryTemplate<'a> {
     record_class_name: &'a str,
     record_factory_name: &'a str,
