@@ -1,7 +1,6 @@
 import pandas as pd
 import pytest
 from pandera.typing import DataFrame
-
 from src.schema.user import UserSchema
 from src.service import exclude_under_20_users
 from src.testing.fauxgen.schema.user import user_schema_record

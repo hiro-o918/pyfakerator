@@ -1,6 +1,7 @@
 from typing import Any, Callable
-from fauxgen.unset import Unset, UNSET
+
 import pytest
+from fauxgen.unset import UNSET, Unset
 
 
 class TestUnset:
@@ -12,6 +13,8 @@ class TestUnset:
             pytest.param(42, lambda: 100, 42),
         ],
     )
-    def test_unwrap_or_else(self, value: Unset | Any , func: Callable[[], Any], expected: Any) -> None:
+    def test_unwrap_or_else(
+        self, value: Unset | Any, func: Callable[[], Any], expected: Any
+    ) -> None:
         actual = Unset.unwrap_or_else(value, func)
-        assert actual    == expected
+        assert actual == expected
