@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.4](https://github.com/hiro-o918/fauxgen/compare/v0.3.3...v0.3.4) (2025-03-29)
+
+
+### Bug Fixes
+
+* fix run-on ([#30](https://github.com/hiro-o918/fauxgen/issues/30)) ([0723498](https://github.com/hiro-o918/fauxgen/commit/0723498efb998dde2a460e8b758f48aac4187d55))
+
 ## [0.3.3](https://github.com/hiro-o918/fauxgen/compare/v0.3.2...v0.3.3) (2025-03-29)
 
 
