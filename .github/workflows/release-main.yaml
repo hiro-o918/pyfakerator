@@ -54,8 +54,8 @@ jobs:
     uses: ./.github/workflows/wc-rust-test.yaml
 
   build:
-    needs: [python-test, rust-test]
-    if: github.event.pull_request.merged == true
+    needs: [release-please, python-test, rust-test]
+    if: needs.release-please.outputs.release_created && github.event.pull_request.merged == true
     name: build on ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -88,8 +88,8 @@ jobs:
           path: dist/
 
   release-main:
-    needs: [python-test, rust-test, build]
-    if: github.event.pull_request.merged == true
+    needs: [release-please, python-test, rust-test, build]
+    if: needs.release-please.outputs.release_created && github.event.pull_request.merged == true
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
