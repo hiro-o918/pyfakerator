@@ -14,15 +14,10 @@ dependencies = [
 [tool.uv]
 package = true
 
-[project.scripts]
-fakerator = "fakerator:cli"
-
 [tool.maturin]
 manifest-path = "fakerator-core/Cargo.toml"
-bindings = 'pyo3'
-module-name = "fakerator.core._fakerator_core"
+bindings = "bin"
 python-source = "python"
-features = ["pyo3/extension-module"]
 strip = true
 exclude = [
     "fakerator_core/resources/**/*",
