@@ -1,0 +1,33 @@
+# Changelog
+
+## [0.2.0](https://github.com/hiro-o918/fakerator/compare/0.1.0...0.2.0) (2025-03-29)
+
+
+### Features
+
+* add cli for fakerator ([#3](https://github.com/hiro-o918/fakerator/issues/3)) ([18ab5f9](https://github.com/hiro-o918/fakerator/commit/18ab5f944d844501817eef435d110e055568063e))
+* add examples and readme ([#4](https://github.com/hiro-o918/fakerator/issues/4)) ([8c79f5c](https://github.com/hiro-o918/fakerator/commit/8c79f5ce34b6a4baf465aa1bd30d14f6ae0a9113))
+* add factory for pandera dataframe ([fb0557f](https://github.com/hiro-o918/fakerator/commit/fb0557f18767d85b01394d1add8c9791a76b23ce))
+* add fakerator-core ([dbb88b1](https://github.com/hiro-o918/fakerator/commit/dbb88b195dd0272ece7d686574c3010adee52dfa))
+* add generator for a file ([a283ca8](https://github.com/hiro-o918/fakerator/commit/a283ca8dc365218923631943de0d1eb0b846b83e))
+* add releaser action ([#6](https://github.com/hiro-o918/fakerator/issues/6)) ([cad8d32](https://github.com/hiro-o918/fakerator/commit/cad8d32cf3ab8e016076caf936c4bf4d93bb979d))
+* initialize cargo project ([b69f11f](https://github.com/hiro-o918/fakerator/commit/b69f11f5dccdf4845d9cfefc1a5ee941bbe4c054))
+* initialize cargo project ([6777c68](https://github.com/hiro-o918/fakerator/commit/6777c68a3248d19c9fad15ec391f06acda0bed5a))
+* write files to factory dir ([8e56be8](https://github.com/hiro-o918/fakerator/commit/8e56be868c89b3d95be8c8fc782e606b8e53db0d))
+
+
+### Bug Fixes
+
+* make rust cache on CI ([#10](https://github.com/hiro-o918/fakerator/issues/10)) ([ed1e5c5](https://github.com/hiro-o918/fakerator/commit/ed1e5c5c4a0c0cde3b2a098f4f02b0dcdc070108))
+
+
+### Miscellaneous
+
+* add .gitignore ([321f695](https://github.com/hiro-o918/fakerator/commit/321f6959a329cd0e85de35f53cb5633695b5a004))
+* add settings json ([12014c2](https://github.com/hiro-o918/fakerator/commit/12014c2cfde9bd24f897534bb31b51df6d340430))
+* add some deps ([eeb41ab](https://github.com/hiro-o918/fakerator/commit/eeb41abb2f97af3b51aff7cb3026f7bfd62b4fbc))
+* downgrade ([#8](https://github.com/hiro-o918/fakerator/issues/8)) ([509725e](https://github.com/hiro-o918/fakerator/commit/509725e56e97df64f266a534b702fb1444792219))
+* fix lint ([94c2a09](https://github.com/hiro-o918/fakerator/commit/94c2a097d8a52f76c9ff2ce17205838221b7da8c))
+* move bin ([21f9d9e](https://github.com/hiro-o918/fakerator/commit/21f9d9e48d6ff3046ff3b0e730e1d510ff55fa70))
+* update releaser configurations ([#9](https://github.com/hiro-o918/fakerator/issues/9)) ([c9416d5](https://github.com/hiro-o918/fakerator/commit/c9416d519aa77465fea2e63be3259bc3272fd8d1))
+* use pinact ([#5](https://github.com/hiro-o918/fakerator/issues/5)) ([ac94054](https://github.com/hiro-o918/fakerator/commit/ac94054ac8dd7d6676586c1f5b4924c621ba1405))
