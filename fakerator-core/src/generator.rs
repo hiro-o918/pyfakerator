@@ -53,20 +53,31 @@ import fakerator as f
 }
 
 fn create_dir_all_with_init(from: &Path, target: &Path) -> Result<()> {
-    if target.exists() {
+    let init_path = target.join("__init__.py");
+    // When the target is the same as the from, we need to break the recursion
+    // and create the directory and __init__.py file if required
+    if from == target {
+        if !target.exists() {
+            std::fs::create_dir(target)
+                .with_context(|| format!("Failed to create directory: {}", target.display()))?;
+        }
+        if !init_path.exists() {
+            std::fs::write(&init_path, "")?;
+        }
         return Ok(());
     }
 
-    // NOTE: recursive create parent directories until the directory exists
     if let Some(parent) = target.parent() {
         create_dir_all_with_init(from, parent)?;
     }
 
-    std::fs::create_dir(target)
-        .with_context(|| format!("Failed to create directory: {}", target.display()))?;
-
-    let init_path = target.join("__init__.py");
-    std::fs::write(init_path, "")?;
+    if !target.exists() {
+        std::fs::create_dir(target)
+            .with_context(|| format!("Failed to create directory: {}", target.display()))?;
+    }
+    if !init_path.exists() {
+        std::fs::write(&init_path, "")?;
+    }
 
     Ok(())
 }
@@ -88,7 +99,6 @@ pub fn write_factory_codes(module_dir: &Path, output_dir: &Path) -> Result<()> {
     Ok(())
 }
 
-// tests
 #[cfg(test)]
 mod tests {
     use super::*;

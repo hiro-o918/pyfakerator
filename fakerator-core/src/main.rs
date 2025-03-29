@@ -43,6 +43,7 @@ fn main() {
             });
             if let Err(e) = write_factory_codes(&module_dir, &output_dir) {
                 eprintln!("Error generating factory codes: {}", e);
+                std::process::exit(1);
             }
             println!(
                 "Factory codes generated successfully in {}",
