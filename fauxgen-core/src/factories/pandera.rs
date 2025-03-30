@@ -1,5 +1,8 @@
 use crate::{
-    fields::{Field, FieldType, FieldTypeFloat, FieldTypeInt, FieldTypeString, FieldTypeBool, FieldTypeDate, FieldTypeDatetime},
+    fields::{
+        Field, FieldType, FieldTypeBool, FieldTypeDate, FieldTypeDatetime, FieldTypeFloat,
+        FieldTypeInt, FieldTypeString,
+    },
     strings,
 };
 use anyhow::{Ok, Result};
@@ -26,6 +29,7 @@ struct PanderaFieldParameter {
 struct PanderaFactoryTemplate<'a> {
     record_class_name: &'a str,
     record_factory_name: &'a str,
+    dataframe_schema_class_name: &'a str,
     fields: Vec<Field>,
 }
 
@@ -59,6 +63,7 @@ impl<R: Debug> PanderaHandler<R> {
             PanderaFactoryTemplate {
                 record_class_name: &format!("{}Record", class_name),
                 record_factory_name: strings::to_snake_case(record_class_name).as_str(),
+                dataframe_schema_class_name: &class_name,
                 fields,
             }
             .render()?,
@@ -144,7 +149,12 @@ impl<R: Debug> PanderaHandler<R> {
                 _ => {}
             }
         }
-        Ok(Some(PanderaFieldParameter { ge, le, nullable, description }))
+        Ok(Some(PanderaFieldParameter {
+            ge,
+            le,
+            nullable,
+            description,
+        }))
     }
 
     fn get_field_type_from_series_ann(
