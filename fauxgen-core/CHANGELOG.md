@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/hiro-o918/fauxgen/compare/fauxgen-core@v0.1.0...fauxgen-core@v0.1.1) (2025-03-30)
+
+
+### Bug Fixes
+
+* ignore invalid code generation to continue ([#35](https://github.com/hiro-o918/fauxgen/issues/35)) ([baac1e2](https://github.com/hiro-o918/fauxgen/commit/baac1e2acd63a613208ab295d29e67babbd8b2cf))
+
 ## [0.1.0](https://github.com/hiro-o918/fauxgen/compare/fauxgen-core@v0.2.3...fauxgen-core@v0.1.0) (2025-03-29)
 
 
