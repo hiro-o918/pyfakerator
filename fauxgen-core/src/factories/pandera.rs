@@ -1,5 +1,5 @@
 use crate::{
-    fields::{Field, FieldType, FieldTypeFloat, FieldTypeInt, FieldTypeString},
+    fields::{Field, FieldType, FieldTypeFloat, FieldTypeInt, FieldTypeString, FieldTypeBool, FieldTypeDate, FieldTypeDatetime},
     strings,
 };
 use anyhow::{Ok, Result};
@@ -18,6 +18,7 @@ struct PanderaFieldParameter {
     ge: Option<f64>,
     le: Option<f64>,
     nullable: Option<bool>,
+    description: Option<String>,
 }
 
 #[derive(Template)]
@@ -110,6 +111,7 @@ impl<R: Debug> PanderaHandler<R> {
         let mut ge = None;
         let mut le = None;
         let mut nullable = None;
+        let mut description = None;
 
         for keyword in field_value.keywords.iter() {
             let Some(arg) = &keyword.arg else {
@@ -118,27 +120,31 @@ impl<R: Debug> PanderaHandler<R> {
             let Some(value) = keyword.value.as_constant_expr() else {
                 continue;
             };
-            if arg.as_str() == "ge" {
-                let ge_float = value.value.as_float().cloned();
-                let ge_int = value
-                    .value
-                    .as_int()
-                    .map(|v| v.to_string().parse::<f64>())
-                    .transpose()?;
-                ge = ge_float.or(ge_int);
-            } else if arg.as_str() == "le" {
-                let le_float = value.value.as_float().cloned();
-                let le_int = value
-                    .value
-                    .as_int()
-                    .map(|v| v.to_string().parse::<f64>())
-                    .transpose()?;
-                le = le_float.or(le_int);
-            } else if arg.as_str() == "nullable" {
-                nullable = value.value.as_bool().cloned();
+            match arg.as_str() {
+                "ge" => {
+                    let ge_float = value.value.as_float().cloned();
+                    let ge_int = value
+                        .value
+                        .as_int()
+                        .map(|v| v.to_string().parse::<f64>())
+                        .transpose()?;
+                    ge = ge_float.or(ge_int);
+                }
+                "le" => {
+                    let le_float = value.value.as_float().cloned();
+                    let le_int = value
+                        .value
+                        .as_int()
+                        .map(|v| v.to_string().parse::<f64>())
+                        .transpose()?;
+                    le = le_float.or(le_int);
+                }
+                "nullable" => nullable = value.value.as_bool().cloned(),
+                "description" => description = value.value.as_str().map(|s| s.to_string()),
+                _ => {}
             }
         }
-        Ok(Some(PanderaFieldParameter { ge, le, nullable }))
+        Ok(Some(PanderaFieldParameter { ge, le, nullable, description }))
     }
 
     fn get_field_type_from_series_ann(
@@ -167,28 +173,37 @@ impl<R: Debug> PanderaHandler<R> {
                 return Some(FieldType::Int(FieldTypeInt {
                     ge: pandera_field_parameter.ge,
                     le: pandera_field_parameter.le,
+                    description: pandera_field_parameter.description.clone(),
                 }));
             }
             if self.pa_float_regex.is_match(attribute.attr.as_str()) {
                 return Some(FieldType::Float(FieldTypeFloat {
                     ge: pandera_field_parameter.ge,
                     le: pandera_field_parameter.le,
+                    description: pandera_field_parameter.description.clone(),
                 }));
             }
             if attribute.attr.as_str() == "String" {
                 return Some(FieldType::String(FieldTypeString {
                     min_length: None,
                     max_length: None,
+                    description: pandera_field_parameter.description.clone(),
                 }));
             }
             if attribute.attr.as_str() == "Bool" {
-                return Some(FieldType::Bool);
+                return Some(FieldType::Bool(FieldTypeBool {
+                    description: pandera_field_parameter.description.clone(),
+                }));
             }
             if attribute.attr.as_str() == "Date" {
-                return Some(FieldType::Date);
+                return Some(FieldType::Date(FieldTypeDate {
+                    description: pandera_field_parameter.description.clone(),
+                }));
             }
             if attribute.attr.as_str() == "DateTime" {
-                return Some(FieldType::Datetime);
+                return Some(FieldType::Datetime(FieldTypeDatetime {
+                    description: pandera_field_parameter.description.clone(),
+                }));
             }
         }
 
@@ -198,22 +213,27 @@ impl<R: Debug> PanderaHandler<R> {
                 return Some(FieldType::Int(FieldTypeInt {
                     ge: pandera_field_parameter.ge,
                     le: pandera_field_parameter.le,
+                    description: pandera_field_parameter.description.clone(),
                 }));
             }
             if attribute.id.as_str() == "float" {
                 return Some(FieldType::Float(FieldTypeFloat {
                     ge: pandera_field_parameter.ge,
                     le: pandera_field_parameter.le,
+                    description: pandera_field_parameter.description.clone(),
                 }));
             }
             if attribute.id.as_str() == "str" {
                 return Some(FieldType::String(FieldTypeString {
                     min_length: None,
                     max_length: None,
+                    description: pandera_field_parameter.description.clone(),
                 }));
             }
             if attribute.id.as_str() == "bool" {
-                return Some(FieldType::Bool);
+                return Some(FieldType::Bool(FieldTypeBool {
+                    description: pandera_field_parameter.description.clone(),
+                }));
             }
         }
         None
