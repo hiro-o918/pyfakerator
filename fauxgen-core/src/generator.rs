@@ -85,8 +85,21 @@ fn create_dir_all_with_init(from: &Path, target: &Path) -> Result<()> {
 pub fn write_factory_codes(module_dir: &Path, output_dir: &Path) -> Result<()> {
     let files = walk_dir(module_dir, "py")?;
     for file in files {
-        let Some(factory_code) = render_factory_code_from_file(&file)? else {
-            continue;
+        let factory_code = match render_factory_code_from_file(&file) {
+            Ok(Some(code)) => code,
+            // If the file does not contain a class definition, we skip it
+            Ok(None) => {
+                continue;
+            }
+            // If there is an error, we log it and continue
+            Err(e) => {
+                eprintln!(
+                    "Error rendering factory code from file {}: {}",
+                    file.display(),
+                    e
+                );
+                continue;
+            }
         };
         let relative_path = file.strip_prefix(module_dir)?.to_path_buf();
         let factory_file = output_dir.join(relative_path).with_extension("py");
