@@ -17,7 +17,7 @@ uv run fauxgen gen --module-dir <your_module>
 
 ## Usage Example
 
-Example project can be found in the [example directory](./example).
+Example project can be found in the [examples](./examples/).
 
 ### Traditional Approach (Without fauxgen)
 
