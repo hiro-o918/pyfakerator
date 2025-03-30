@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/hiro-o918/fauxgen/compare/v0.1.1...v0.2.0) (2025-03-30)
+
+
+### Features
+
+* add docstring to generated codes ([#42](https://github.com/hiro-o918/fauxgen/issues/42)) ([5043583](https://github.com/hiro-o918/fauxgen/commit/50435838fc42ae3f931169998034a21459d3c772))
+
 ## [0.1.1](https://github.com/hiro-o918/fauxgen/compare/v0.1.0...v0.1.1) (2025-03-30)
 
 
