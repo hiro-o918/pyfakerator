@@ -1,0 +1,37 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  lockFileMaintenance: {
+    enabled: true,
+  },
+  extends: ["config:base", "github>aquaproj/aqua-renovate-config#2.2.1"],
+  enabledManagers: ["cargo", "pep621"],
+  automerge: false,
+  packageRules: [
+    {
+      groupName: "python patch dependencies",
+      matchManagers: ["pep621"],
+      matchUpdateTypes: ["patch"],
+      matchPackagePatterns: ["*"],
+      automerge: true,
+    },
+    {
+      groupName: "python minor-major dependencies",
+      matchManagers: ["pep621"],
+      matchUpdateTypes: ["minor", "major"],
+      matchPackagePatterns: ["*"],
+    },
+    {
+      groupName: "rust patch dependencies",
+      matchManagers: ["cargo"],
+      matchUpdateTypes: ["patch"],
+      matchPackagePatterns: ["*"],
+      automerge: true,
+    },
+    {
+      groupName: "rust minor-major dependencies",
+      matchManagers: ["cargo"],
+      matchUpdateTypes: ["minor", "major"],
+      matchPackagePatterns: ["*"],
+    },
+  ],
+}
