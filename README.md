@@ -17,6 +17,8 @@ uv run fauxgen gen --module-dir <your_module>
 
 ## Usage Example
 
+Example project can be found in the [example directory](./example).
+
 ### Traditional Approach (Without fauxgen)
 
 Testing DataFrame models traditionally requires explicit specification of all fields, even when testing a single validation:
