@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.1.1](https://github.com/hiro-o918/fauxgen/compare/v0.1.0...v0.1.1) (2025-03-30)
+
+
+### Bug Fixes
+
+* ignore invalid code generation to continue ([#35](https://github.com/hiro-o918/fauxgen/issues/35)) ([baac1e2](https://github.com/hiro-o918/fauxgen/commit/baac1e2acd63a613208ab295d29e67babbd8b2cf))
+
+
+### Documentation
+
+* add statement about example directory ([#36](https://github.com/hiro-o918/fauxgen/issues/36)) ([7b7d046](https://github.com/hiro-o918/fauxgen/commit/7b7d046446ce77383d9c42281aefa7030df57f9f))
+* fix typo ([#39](https://github.com/hiro-o918/fauxgen/issues/39)) ([30169cc](https://github.com/hiro-o918/fauxgen/commit/30169cc09bcd4fca91ac35e9b01084eb6b0ee3a2))
+
+
+### Miscellaneous
+
+* update release please config ([#40](https://github.com/hiro-o918/fauxgen/issues/40)) ([62f6f1b](https://github.com/hiro-o918/fauxgen/commit/62f6f1bd81223eb4ab593e82319723f40d9a9204))
+* update renovate configs ([#38](https://github.com/hiro-o918/fauxgen/issues/38)) ([79a4d0c](https://github.com/hiro-o918/fauxgen/commit/79a4d0c76d85912c753fcefe7fff0b743af7e988))
+
 ## [0.1.0](https://github.com/hiro-o918/fauxgen/compare/v0.3.4...v0.1.0) (2025-03-29)
 
 
