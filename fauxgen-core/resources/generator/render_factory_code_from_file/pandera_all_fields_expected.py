@@ -23,6 +23,7 @@ class TestSchemaRecord(TypedDict):
     bool_col: bool
     pa_bool_col: bool
     pa_datetime_col: datetime.datetime
+    pa_datetime_with_tz_col: datetime.datetime | None
     pa_date_col: datetime.date
 
 
@@ -45,6 +46,7 @@ def test_schema_record(
     bool_col: bool | f.Unset = f.UNSET,
     pa_bool_col: bool | f.Unset = f.UNSET,
     pa_datetime_col: datetime.datetime | f.Unset = f.UNSET,
+    pa_datetime_with_tz_col: datetime.datetime | None | f.Unset = f.UNSET,
     pa_date_col: datetime.date | f.Unset = f.UNSET,
     seed_: int | None = None,
 ) -> TestSchemaRecord:
@@ -71,6 +73,7 @@ def test_schema_record(
         bool_col (bool): Field bool_col
         pa_bool_col (bool): Field pa_bool_col
         pa_datetime_col (datetime.datetime): Field pa_datetime_col
+        pa_datetime_with_tz_col (datetime.datetime | None): Datetime with timezone in UTC
         pa_date_col (datetime.date): Field pa_date_col
         seed_ (int | None): Seed value for deterministic data generation.
                             The same seed will always produce the same values.
@@ -96,5 +99,6 @@ def test_schema_record(
         "bool_col": f.Unset.unwrap_or_else(bool_col, lambda: f.gen_bool(seed=seed_)),
         "pa_bool_col": f.Unset.unwrap_or_else(pa_bool_col, lambda: f.gen_bool(seed=seed_)),
         "pa_datetime_col": f.Unset.unwrap_or_else(pa_datetime_col, lambda: f.gen_datetime(from_datetime=datetime.datetime(2020, 1, 1), to_datetime=datetime.datetime(2021, 1, 1), seed=seed_)),
+        "pa_datetime_with_tz_col": f.Unset.unwrap_or_else(pa_datetime_with_tz_col, lambda: f.gen_datetime(from_datetime=datetime.datetime(2020, 1, 1), to_datetime=datetime.datetime(2021, 1, 1), seed=seed_)),
         "pa_date_col": f.Unset.unwrap_or_else(pa_date_col, lambda: f.gen_date(from_date=datetime.date(2020, 1, 1), to_date=datetime.date(2021, 1, 1), seed=seed_)),
     }

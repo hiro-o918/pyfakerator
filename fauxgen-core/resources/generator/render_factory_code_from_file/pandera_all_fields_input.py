@@ -1,3 +1,6 @@
+from typing import Annotated
+
+import pandas as pd
 import pandera as pa
 from pandera.typing import Series
 
@@ -20,4 +23,5 @@ class TestSchema(pa.DataFrameModel):
     bool_col: Series[bool] = pa.Field()
     pa_bool_col: Series[pa.Bool] = pa.Field()
     pa_datetime_col: Series[pa.DateTime] = pa.Field()
+    pa_datetime_with_tz_col: Series[Annotated[pd.DatetimeTZDtype, "UTC"]] = pa.Field(nullable=True, coerce=True, description="Datetime with timezone in UTC")
     pa_date_col: Series[pa.Date] = pa.Field()
