@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/hiro-o918/fauxgen/compare/v0.2.0...v0.2.1) (2025-04-01)
+
+
+### Bug Fixes
+
+* handle additional types ([#44](https://github.com/hiro-o918/fauxgen/issues/44)) ([cc8ee1a](https://github.com/hiro-o918/fauxgen/commit/cc8ee1aabfa5942769cbd033db5d547c5f4fd18b))
+
 ## [0.2.0](https://github.com/hiro-o918/fauxgen/compare/v0.1.1...v0.2.0) (2025-03-30)
 
 
