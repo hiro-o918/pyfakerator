@@ -1,19 +1,25 @@
 use crate::{
     fields::{
-        Field, FieldType, FieldTypeBool, FieldTypeDate, FieldTypeDatetime, FieldTypeFloat,
-        FieldTypeInt, FieldTypeString,
+        Field, FieldType, FieldTypeAny, FieldTypeBool, FieldTypeDate, FieldTypeDatetime,
+        FieldTypeFloat, FieldTypeInt, FieldTypeString,
     },
     strings,
 };
 use anyhow::{Ok, Result};
 use askama::Template;
-use rustpython_parser::ast::{ExprAttribute, ExprCall, ExprSubscript, StmtAnnAssign, StmtClassDef};
+use rustpython_parser::ast::{
+    ExprAttribute, ExprCall, ExprName, ExprSubscript, StmtAnnAssign, StmtClassDef,
+};
 use std::fmt::Debug;
 
 pub struct PanderaHandler<R: Debug> {
     _phantom: std::marker::PhantomData<R>,
-    pa_int_regex: regex::Regex,
-    pa_float_regex: regex::Regex,
+    int_type_regex: regex::Regex,
+    float_type_regex: regex::Regex,
+    bool_type_regex: regex::Regex,
+    string_type_regex: regex::Regex,
+    date_type_regex: regex::Regex,
+    datetime_type_regex: regex::Regex,
 }
 
 #[derive(Default)]
@@ -38,14 +44,18 @@ impl<R: Debug> Default for PanderaHandler<R> {
         Self::new()
     }
 }
-
 impl<R: Debug> PanderaHandler<R> {
     pub fn new() -> Self {
         Self {
             _phantom: std::marker::PhantomData,
-            pa_int_regex: regex::Regex::new(r"^(Int|Int8|Int16|Int32|Int64)$").unwrap(),
-            pa_float_regex: regex::Regex::new(r"^(Float|Float16|Float32|Float64|Float128)$")
+            int_type_regex: regex::Regex::new(r"^(pa\.(Int|Int8|Int16|Int32|Int64)|pd\.(Int8Dtype|Int16Dtype|Int32Dtype|Int64Dtype))$")
                 .unwrap(),
+            float_type_regex: regex::Regex::new(r"^(pa\.(Float|Float16|Float32|Float64|Float128)|pd\.(Float32Dtype|Float64Dtype))$")
+                .unwrap(),
+            bool_type_regex: regex::Regex::new(r"^(pa\.Bool|pd\.BooleanDtype)$").unwrap(),
+            string_type_regex: regex::Regex::new(r"^(pa\.String|pd\.StringDtype)$").unwrap(),
+            date_type_regex: regex::Regex::new(r"^(pa\.Date)$").unwrap(),
+            datetime_type_regex: regex::Regex::new(r"^(pa\.(DateTime|Timestamp)|pd\.DatetimeTZDtype)$").unwrap(),
         }
     }
 
@@ -157,6 +167,103 @@ impl<R: Debug> PanderaHandler<R> {
         }))
     }
 
+    fn get_field_type_from_attribute_expr(
+        &self,
+        attribute: &ExprAttribute<R>,
+        pandera_field_parameter: &PanderaFieldParameter,
+    ) -> Option<FieldType> {
+        // extract part of `pa` and `pd`
+        // pa.Int -> pa
+        // pd.Int8Dtype -> pd
+        let module_name = attribute.value.as_name_expr()?.id.as_str();
+        // extract part of `Int` and `Float`
+        // pa.Int -> Int
+        // pd.Int8Dtype -> Int8Dtype
+        let class_name = attribute.attr.as_str();
+        // get the full type definition like `pa.Int` or `pd.Int8Dtype`
+        let type_def = format!("{}.{}", module_name, class_name);
+
+        // check if the class name is in the regex
+        if self.int_type_regex.is_match(&type_def) {
+            return Some(FieldType::Int(FieldTypeInt {
+                ge: pandera_field_parameter.ge,
+                le: pandera_field_parameter.le,
+                description: pandera_field_parameter.description.clone(),
+            }));
+        }
+        if self.float_type_regex.is_match(&type_def) {
+            return Some(FieldType::Float(FieldTypeFloat {
+                ge: pandera_field_parameter.ge,
+                le: pandera_field_parameter.le,
+                description: pandera_field_parameter.description.clone(),
+            }));
+        }
+        if self.bool_type_regex.is_match(&type_def) {
+            return Some(FieldType::Bool(FieldTypeBool {
+                description: pandera_field_parameter.description.clone(),
+            }));
+        }
+        if self.string_type_regex.is_match(&type_def) {
+            return Some(FieldType::String(FieldTypeString {
+                min_length: None,
+                max_length: None,
+                description: pandera_field_parameter.description.clone(),
+            }));
+        }
+        if self.date_type_regex.is_match(&type_def) {
+            return Some(FieldType::Date(FieldTypeDate {
+                description: pandera_field_parameter.description.clone(),
+            }));
+        }
+        if self.datetime_type_regex.is_match(&type_def) {
+            return Some(FieldType::Datetime(FieldTypeDatetime {
+                description: pandera_field_parameter.description.clone(),
+            }));
+        }
+        eprintln!("Unknown field type: {}, which handled as Any", type_def);
+        Some(FieldType::Any(FieldTypeAny {
+            description: pandera_field_parameter.description.clone(),
+        }))
+    }
+
+    fn get_field_type_from_name_expr(
+        &self,
+        name_expr: &ExprName<R>,
+        pandera_field_parameter: &PanderaFieldParameter,
+    ) -> FieldType {
+        // handle type of python like int, float, str, bool
+        if name_expr.id.as_str() == "int" {
+            return FieldType::Int(FieldTypeInt {
+                ge: pandera_field_parameter.ge,
+                le: pandera_field_parameter.le,
+                description: pandera_field_parameter.description.clone(),
+            });
+        }
+        if name_expr.id.as_str() == "float" {
+            return FieldType::Float(FieldTypeFloat {
+                ge: pandera_field_parameter.ge,
+                le: pandera_field_parameter.le,
+                description: pandera_field_parameter.description.clone(),
+            });
+        }
+        if name_expr.id.as_str() == "str" {
+            return FieldType::String(FieldTypeString {
+                min_length: None,
+                max_length: None,
+                description: pandera_field_parameter.description.clone(),
+            });
+        }
+        if name_expr.id.as_str() == "bool" {
+            return FieldType::Bool(FieldTypeBool {
+                description: pandera_field_parameter.description.clone(),
+            });
+        }
+        eprintln!("Unknown field type: {}, which handled as Any", name_expr.id);
+        return FieldType::Any(FieldTypeAny {
+            description: pandera_field_parameter.description.clone(),
+        });
+    }
+
     fn get_field_type_from_series_ann(
         &self,
         field_ann: &ExprSubscript<R>,
@@ -167,86 +274,44 @@ impl<R: Debug> PanderaHandler<R> {
             .as_name_expr()
             .is_some_and(|name| name.id.as_str() != "Series")
         {
+            // not a Series type
+            eprintln!("Unknown field type: {:?}", field_ann.value);
             return None;
         }
 
         // handle type of pandera like pa.Int
         if let Some(attribute) = field_ann.slice.as_attribute_expr() {
-            if attribute
-                .value
-                .as_name_expr()
-                .is_some_and(|name| name.id.as_str() != "pa")
-            {
-                return None;
-            }
-            if self.pa_int_regex.is_match(attribute.attr.as_str()) {
-                return Some(FieldType::Int(FieldTypeInt {
-                    ge: pandera_field_parameter.ge,
-                    le: pandera_field_parameter.le,
-                    description: pandera_field_parameter.description.clone(),
-                }));
-            }
-            if self.pa_float_regex.is_match(attribute.attr.as_str()) {
-                return Some(FieldType::Float(FieldTypeFloat {
-                    ge: pandera_field_parameter.ge,
-                    le: pandera_field_parameter.le,
-                    description: pandera_field_parameter.description.clone(),
-                }));
-            }
-            if attribute.attr.as_str() == "String" {
-                return Some(FieldType::String(FieldTypeString {
-                    min_length: None,
-                    max_length: None,
-                    description: pandera_field_parameter.description.clone(),
-                }));
-            }
-            if attribute.attr.as_str() == "Bool" {
-                return Some(FieldType::Bool(FieldTypeBool {
-                    description: pandera_field_parameter.description.clone(),
-                }));
-            }
-            if attribute.attr.as_str() == "Date" {
-                return Some(FieldType::Date(FieldTypeDate {
-                    description: pandera_field_parameter.description.clone(),
-                }));
-            }
-            if attribute.attr.as_str() == "DateTime" {
-                return Some(FieldType::Datetime(FieldTypeDatetime {
-                    description: pandera_field_parameter.description.clone(),
-                }));
-            }
+            return self.get_field_type_from_attribute_expr(attribute, pandera_field_parameter);
         }
-
         // handle type of python like int, float, str, bool
         if let Some(attribute) = field_ann.slice.as_name_expr() {
-            if attribute.id.as_str() == "int" {
-                return Some(FieldType::Int(FieldTypeInt {
-                    ge: pandera_field_parameter.ge,
-                    le: pandera_field_parameter.le,
-                    description: pandera_field_parameter.description.clone(),
-                }));
-            }
-            if attribute.id.as_str() == "float" {
-                return Some(FieldType::Float(FieldTypeFloat {
-                    ge: pandera_field_parameter.ge,
-                    le: pandera_field_parameter.le,
-                    description: pandera_field_parameter.description.clone(),
-                }));
-            }
-            if attribute.id.as_str() == "str" {
-                return Some(FieldType::String(FieldTypeString {
-                    min_length: None,
-                    max_length: None,
-                    description: pandera_field_parameter.description.clone(),
-                }));
-            }
-            if attribute.id.as_str() == "bool" {
-                return Some(FieldType::Bool(FieldTypeBool {
-                    description: pandera_field_parameter.description.clone(),
-                }));
+            return Some(self.get_field_type_from_name_expr(attribute, pandera_field_parameter));
+        }
+
+        // handle type with Annotated like `pd.Series[Annotated[pd.DatetimeTZDtype, "us", "Asia/Tokyo"]]`
+        if let Some(annotated) = field_ann.slice.as_subscript_expr() {
+            if annotated.value.as_name_expr().map(|name| name.id.as_str()) == Some("Annotated") {
+                if let Some(tuple) = annotated.slice.as_tuple_expr() {
+                    // Extract first element of the tuple `pd.DatetimeTZDtype`
+                    if let Some(first_type) = tuple.elts.first() {
+                        if let Some(attribute) = first_type.as_attribute_expr() {
+                            return self.get_field_type_from_attribute_expr(
+                                attribute,
+                                pandera_field_parameter,
+                            );
+                        }
+                        if let Some(name_expr) = first_type.as_name_expr() {
+                            return Some(self.get_field_type_from_name_expr(
+                                name_expr,
+                                pandera_field_parameter,
+                            ));
+                        }
+                    }
+                }
             }
         }
-        None
+        eprintln!("Unknown field type: {:?}", field_ann.slice);
+        return None;
     }
 
     fn get_field_from_ann_assign(

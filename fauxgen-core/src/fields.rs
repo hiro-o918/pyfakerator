@@ -52,6 +52,13 @@ pub struct FieldTypeDate {
     pub description: Option<String>,
 }
 
+/// A struct representing a date field type
+#[derive(Debug, Clone, PartialEq)]
+pub struct FieldTypeAny {
+    /// Field description
+    pub description: Option<String>,
+}
+
 /// An enum representing field types in the schema
 #[derive(Debug, Clone, PartialEq)]
 pub enum FieldType {
@@ -61,6 +68,7 @@ pub enum FieldType {
     Bool(FieldTypeBool),
     Datetime(FieldTypeDatetime),
     Date(FieldTypeDate),
+    Any(FieldTypeAny),
 }
 
 /// A struct representing a field in the schema
@@ -84,6 +92,7 @@ impl Field {
             FieldType::Bool(_) => "bool",
             FieldType::Datetime(_) => "datetime.datetime",
             FieldType::Date(_) => "datetime.date",
+            FieldType::Any(_) => "typing.Any",
         };
         if self.nullable {
             format!("{} | None", f)
@@ -141,6 +150,8 @@ impl Field {
                 let to = "datetime.date(2021, 1, 1)";
                 format!("f.gen_date(from_date={}, to_date={}, seed=seed_)", from, to)
             }
+
+            FieldType::Any(_) => "None".to_string(),
         }
     }
     pub fn get_description(&self) -> String {
@@ -151,6 +162,7 @@ impl Field {
             FieldType::Bool(field) => field.description.clone(),
             FieldType::Datetime(field) => field.description.clone(),
             FieldType::Date(field) => field.description.clone(),
+            FieldType::Any(field) => field.description.clone(),
         }
         .unwrap_or_else(|| format!("Field {}", self.name))
     }
