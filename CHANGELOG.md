@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/hiro-o918/fauxgen/compare/v0.2.1...v0.2.2) (2025-04-05)
+
+
+### Bug Fixes
+
+* **deps:** update rust crate clap to v4.5.35 ([#46](https://github.com/hiro-o918/fauxgen/issues/46)) ([3e40591](https://github.com/hiro-o918/fauxgen/commit/3e40591def53202160cff8c1c9f74c171d652a2b))
+
 ## [0.2.1](https://github.com/hiro-o918/fauxgen/compare/v0.2.0...v0.2.1) (2025-04-01)
 
 
