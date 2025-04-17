@@ -41,7 +41,7 @@ pub fn render_factory_code_from_file(file: &Path) -> Result<Option<String>> {
         return Ok(None);
     }
     let import_statements = r#"import datetime
-from typing import TypedDict
+from typing import Any, TypedDict
 
 import fauxgen as f
 

@@ -92,7 +92,7 @@ impl Field {
             FieldType::Bool(_) => "bool",
             FieldType::Datetime(_) => "datetime.datetime",
             FieldType::Date(_) => "datetime.date",
-            FieldType::Any(_) => "typing.Any",
+            FieldType::Any(_) => "Any",
         };
         if self.nullable {
             format!("{} | None", f)
