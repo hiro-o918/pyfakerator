@@ -11,6 +11,7 @@ askama = "0.13.0"
 clap = {version = "4.0", features = ["derive"]}
 clap_complete = "4.5.47"
 regex = "1.11.1"
+rustpython-ast = {version = "0.4.0", features = ["visitor"]}
 rustpython-parser = "0.4.0"
 
 [[bin]]

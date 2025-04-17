@@ -275,6 +275,7 @@ dependencies = [
  "pretty_assertions",
  "regex",
  "rstest",
+ "rustpython-ast",
  "rustpython-parser",
  "tempfile",
 ]

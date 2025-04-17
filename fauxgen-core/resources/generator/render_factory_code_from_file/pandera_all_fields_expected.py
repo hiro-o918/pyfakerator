@@ -1,5 +1,5 @@
 import datetime
-from typing import TypedDict
+from typing import Any, TypedDict
 
 import fauxgen as f
 
